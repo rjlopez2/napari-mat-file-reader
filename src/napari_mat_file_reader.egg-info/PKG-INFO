@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: napari-mat-file-reader
-Version: 0.0.1
+Version: 0.0.2
 Summary: This is a simple wraper to read .mat files from Matlab
 Home-page: https://github.com/rjlopez2/napari-mat-file-reader
 Author: Ruben Lopez
