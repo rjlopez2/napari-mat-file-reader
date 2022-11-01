@@ -11,7 +11,7 @@ contributions:
   readers:
     - command: napari-mat-file-reader.get_reader
       accepts_directories: false
-      filename_patterns: ['*.npy']
+      filename_patterns: ['*.mat']
   sample_data:
     - command: napari-mat-file-reader.make_sample_data
       display_name: napari mat file reader
