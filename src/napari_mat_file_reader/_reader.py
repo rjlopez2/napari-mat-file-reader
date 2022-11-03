@@ -71,7 +71,10 @@ def reader_function(path):
 
 
     # optional kwargs for the corresponding viewer.add_* method
-    add_kwargs = {}
+    add_kwargs = {
+        "colormap" : "twilight_shifted",
+        "gamma" : 0.15,
+    }
 
     layer_type = "image"  # optional, default is "image"
     return [(np_array.transpose(2, 0, 1), add_kwargs, layer_type)]
