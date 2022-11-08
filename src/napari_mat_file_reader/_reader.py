@@ -67,6 +67,7 @@ def reader_function(path):
 
     data_dict = mat73.loadmat(path)
     np_array = data_dict['RegisteredImage']
+    metadata = {k: data_dict[k] for k in data_dict.keys() - {'RegisteredImage'}} # extract everything you want to add as metadata but the actual data
 
 
 
@@ -74,6 +75,7 @@ def reader_function(path):
     add_kwargs = {
         "colormap" : "twilight_shifted",
         "gamma" : 0.15,
+        'metadata' : metadata
     }
 
     layer_type = "image"  # optional, default is "image"
