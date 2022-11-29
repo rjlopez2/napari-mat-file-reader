@@ -6,6 +6,7 @@ implement multiple readers or even other plugin contributions. see:
 https://napari.org/stable/plugins/guides.html?#readers
 """
 import mat73
+import scipy.io as sio
 
 
 def napari_get_reader(path):
@@ -64,8 +65,16 @@ def reader_function(path):
     # arrays = [np.load(_path) for _path in paths]
     # # stack arrays into single array
     # data = np.squeeze(np.stack(arrays))
+    try:
+        data_dict = mat73.loadmat(path)   
+    except:
+        data_dict = sio.loadmat(path)
+       
 
-    data_dict = mat73.loadmat(path)
+
+    # data_dict = sio.loadmat(path)
+    # data_dict = mat73.loadmat(path)
+
  # extract everything you want to add as metadata but the actual data
 
     # np_array = data_dict['RegisteredImage']
