@@ -66,16 +66,24 @@ def reader_function(path):
     # data = np.squeeze(np.stack(arrays))
 
     data_dict = mat73.loadmat(path)
-    np_array = data_dict['RegisteredImage']
-    metadata = {k: data_dict[k] for k in data_dict.keys() - {'RegisteredImage'}} # extract everything you want to add as metadata but the actual data
+ # extract everything you want to add as metadata but the actual data
 
+    # np_array = data_dict['RegisteredImage']
+    if 'RegisteredImage' in data_dict:
+        np_array = data_dict.get('RegisteredImage')
+        data_dict.pop('RegisteredImage', None)
+    
 
+    if 'stack' in data_dict:
+        np_array = data_dict.get('stack')
+        data_dict.pop('stack', None)
 
     # optional kwargs for the corresponding viewer.add_* method
     add_kwargs = {
         "colormap" : "twilight_shifted",
         "gamma" : 0.15,
-        'metadata' : metadata
+        "metadata": data_dict
+
     }
 
     layer_type = "image"  # optional, default is "image"
