@@ -7,6 +7,7 @@ https://napari.org/stable/plugins/guides.html?#readers
 """
 import mat73
 import scipy.io as sio
+from .utils import *
 
 
 def napari_get_reader(path):
@@ -79,21 +80,36 @@ def reader_function(path):
 
     # np_array = data_dict['RegisteredImage']
     if 'RegisteredImage' in data_dict:
-        np_array = data_dict.get('RegisteredImage')
+        data = data_dict.get('RegisteredImage')
+        data = data.transpose(2, 0, 1)
         data_dict.pop('RegisteredImage', None)
     
 
     if 'stack' in data_dict:
-        np_array = data_dict.get('stack')
+        data = data_dict.get('stack')
+        data = data.transpose(2, 0, 1)
         data_dict.pop('stack', None)
 
     # optional kwargs for the corresponding viewer.add_* method
     add_kwargs = {
-        "colormap" : "twilight_shifted",
+        "colormap" : "turbo",
         "gamma" : 0.15,
         "metadata": data_dict
 
     }
 
-    layer_type = "image"  # optional, default is "image"
-    return [(np_array.transpose(2, 0, 1), add_kwargs, layer_type)]
+    layer_type = "image"  
+
+    if 'roi_positions' in data_dict:
+        print("##########is reading the data###########")
+        layer_type = 'shapes'
+
+        shape_data = data_dict.get('roi_positions')
+        data = transform_mat_to_python_rois_func(shape_data)
+
+        add_kwargs = {
+             "edge_width":1
+             }
+
+    # optional, default is "image"
+    return [(data, add_kwargs, layer_type)]
