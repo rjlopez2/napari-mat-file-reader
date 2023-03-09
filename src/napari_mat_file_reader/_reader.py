@@ -68,48 +68,34 @@ def reader_function(path):
     # data = np.squeeze(np.stack(arrays))
     try:
         data_dict = mat73.loadmat(path)   
+        # with mat73.loadmat(path) as data_dict: # this apporach is not working, no sure why
+        #     data_dict = data_dict
     except:
         data_dict = sio.loadmat(path)
        
 
 
-    # data_dict = sio.loadmat(path)
-    # data_dict = mat73.loadmat(path)
-
- # extract everything you want to add as metadata but the actual data
-
-    # np_array = data_dict['RegisteredImage']
-    if 'RegisteredImage' in data_dict:
-        data = data_dict.get('RegisteredImage')
-        data = data.transpose(2, 0, 1)
-        data_dict.pop('RegisteredImage', None)
+    data_names = ['RegisteredImage', 'stack', 'roi_positions', 'processed_data_int']
+    data, metadata = extract_stack_array(data_dict = data_dict, stack_name_list=data_names)
     
-
-    if 'stack' in data_dict:
-        data = data_dict.get('stack')
-        data = data.transpose(2, 0, 1)
-        data_dict.pop('stack', None)
-
     # optional kwargs for the corresponding viewer.add_* method
     add_kwargs = {
         "colormap" : "turbo",
         "gamma" : 0.15,
-        "metadata": data_dict
+        "metadata": metadata
 
     }
 
     layer_type = "image"  
 
-    if 'roi_positions' in data_dict:
-        # print("##########is reading the data###########")
+
+    if 'roi_positions' in metadata:
+        
+        add_kwargs = {
+             "edge_width":1,
+             "metadata": metadata
+             }
         layer_type = 'shapes'
 
-        shape_data = data_dict.get('roi_positions')
-        data = transform_mat_to_python_rois_func(shape_data)
 
-        add_kwargs = {
-             "edge_width":1
-             }
-
-    # optional, default is "image"
     return [(data, add_kwargs, layer_type)]
