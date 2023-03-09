@@ -75,7 +75,7 @@ def reader_function(path):
        
 
 
-    data_names = ['RegisteredImage', 'stack', 'roi_positions', 'processed_data_int']
+    data_names = ['RegisteredImage', 'stack', 'roi_positions', 'processed_data_int', 'data_int']
     data, metadata = extract_stack_array(data_dict = data_dict, stack_name_list=data_names)
     
     # optional kwargs for the corresponding viewer.add_* method

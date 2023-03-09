@@ -45,67 +45,35 @@ def extract_stack_array(data_dict, stack_name_list):
     data_dict : metadata harvested from the original data_dic excluding the image raw data.
 
     """
-
-    special_names = ["roi_positions", "processed_data_int"]
+    metadata = {}
+    # special_names = ["roi_positions", "processed_data_int", "data_int"]
     # for name in stack_name_list:
     for key, value in data_dict.copy().items():
         
         ########## handeling the ROIS mat files ##########
-        if (key in stack_name_list) and (key == 'roi_positions'):
+        if key == 'roi_positions':
             shape_data = value
             data = transform_mat_to_python_rois_func(shape_data)
             # data_dict.pop(key, None)
+            metadata.update(data_dict)
         
         ########## handeling the workspace mat files ##########
-        if (key in stack_name_list) and (key == 'processed_data_int'):
+        if key == 'processed_data_int':
             data = value.get("image_stack")[0]
             data = np.swapaxes(data, 0, 2)
             data = np.swapaxes(data, 1,2)
-            data_dict.pop(key, None)
-            # data_dict = dict(value.get("file_info_int"), value.get("data_int"))
+        ### adding metadata ###
+        if key == 'data_int':
+            metadata.update(value)
             
-            
-
-
-
-
-
         ########## handeling other mat files ##########
-        if (key in stack_name_list) and not (key in special_names):
+        if (key == 'RegisteredImage' ) | (key == "stack"):
             data = value
             data = data.transpose(2, 0, 1) # transpose the array so it looks the same orientation as in the matlab app
             # extract everything you want to add as metadata but the actual data
             data_dict.pop(key, None)
-
+            if len(data_dict) != 0:
+                metadata.update(data_dict)
 
             
-        
-
-
-        
-
-
-
-
-    
-        
-    #     if (key in data_dict) and (data_dict[name] != 'roi_positions'):
-            
-    #         data = data_dict.get(name)
-    #         data = data.transpose(2, 0, 1) # transpose the array so it looks the same orientation as in the matlab app
-    #          # extract everything you want to add as metadata but the actual data
-    #         data_dict.pop(name, None)
-            
-    # 
-    #     if (name in data_dict) and (data_dict[name] == 'roi_positions'):
-    #         shape_data = data_dict.get('roi_positions')
-    #         data = transform_mat_to_python_rois_func(shape_data)
-
-    # ########## handeling the workspace mat files ##########
-    #     if (stack_name_list[indx] in data_dict) and (stack_name_list[indx] == 'processed_data_int'):
-    #         data = data_dict.get('processed_data_int')
-    #         data = data.get('image_stack')[0]
-    #         # data_dict = dict(data_dict['data_int'], data_dict['file_info_int'])
-    #         data_dict = list(data_dict.keys())
-            
-    return (data, data_dict)
+    return (data, metadata)
