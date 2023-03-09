@@ -101,7 +101,7 @@ def reader_function(path):
     layer_type = "image"  
 
     if 'roi_positions' in data_dict:
-        print("##########is reading the data###########")
+        # print("##########is reading the data###########")
         layer_type = 'shapes'
 
         shape_data = data_dict.get('roi_positions')
